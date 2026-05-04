@@ -6,9 +6,11 @@ import Groq from "groq-sdk";
 dotenv.config();
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
+// Groq setup
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
 });
@@ -28,7 +30,7 @@ app.post("/analyze", async (req, res) => {
     }
 
     const response = await groq.chat.completions.create({
-      model: "llama-3.1-8b-instant", // ✅ best choice
+      model: "llama-3.1-8b-instant",
       messages: [
         {
           role: "system",
@@ -49,8 +51,8 @@ app.post("/analyze", async (req, res) => {
   } catch (error) {
     console.error("Groq error:", error.message);
 
-    // 🔥 Fallback logic (so your app NEVER breaks)
-    const text = req.body.text.toLowerCase();
+    // Fallback logic (safe backup if API fails)
+    const input = req.body.text?.toLowerCase() || "";
     let score = 0;
 
     const keywords = [
@@ -60,10 +62,10 @@ app.post("/analyze", async (req, res) => {
     ];
 
     keywords.forEach(word => {
-      if (text.includes(word)) score++;
+      if (input.includes(word)) score++;
     });
 
-    if (text.includes("http")) score += 2;
+    if (input.includes("http")) score += 2;
 
     let result = "";
     if (score >= 4) {
@@ -78,7 +80,9 @@ app.post("/analyze", async (req, res) => {
   }
 });
 
-// Start server
-app.listen(5000, () => {
-  console.log("Server running on port 5000");
+// ✅ IMPORTANT FIX FOR RAILWAY
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
