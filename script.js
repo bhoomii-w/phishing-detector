@@ -10,7 +10,7 @@ async function analyzeText() {
   resultDiv.innerText = "Analyzing...";
 
   try {
-    const response = await fetch("http://localhost:5000/analyze", {
+    const response = await fetch("https://phishing-detector-production-343e.up.railway.app/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
