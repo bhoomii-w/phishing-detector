@@ -10,7 +10,7 @@ async function analyzeText() {
   resultDiv.innerText = "Analyzing...";
 
   try {
-    const response = await fetch("https://phishing-detector-production-343e.up.railway.app/", {
+    const response = await fetch("https://phishing-detector-production-343e.up.railway.app/analyze", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -20,6 +20,7 @@ async function analyzeText() {
 
     const data = await response.json();
     resultDiv.innerText = data.result;
+
   } catch (error) {
     resultDiv.innerText = "Error connecting to backend";
     console.error(error);
